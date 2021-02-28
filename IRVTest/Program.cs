@@ -3,8 +3,6 @@ namespace IRVTest
 {
     using InstantRunoffVoting;
     using System;
-    using System.Collections.Generic;
-    using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
     class Program
     {

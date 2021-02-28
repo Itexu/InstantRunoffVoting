@@ -2,8 +2,6 @@
 
 namespace InstantRunoffVoting
 {
-    using System;
-
     public class Choice
     {
         public string UniqueID { get; }
