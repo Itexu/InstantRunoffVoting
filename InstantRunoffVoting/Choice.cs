@@ -6,13 +6,14 @@ namespace InstantRunoffVoting
 
     public class Choice
     {
-        public int UniqueID { get; }
+        public string UniqueID { get; }
         public string Name { get; }
 
-        public Choice(int pintUniqueID, string ptxtName)
+
+        public Choice(string pName, string pUniqueID = null)
         {
-            UniqueID = pintUniqueID;
-            Name = ptxtName;
+            Name = pName;
+            UniqueID = pUniqueID ?? Tools.CreateUniqueID();
         }
     }
 }

@@ -3,13 +3,14 @@ namespace IRVTest
 {
     using InstantRunoffVoting;
     using System;
+    using System.Collections.Generic;
     using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
     class Program
     {
         static void Main(string[] args)
         {
-            var lBallot = new Ballot(0, "Test Ballot");
+            var lBallot = new Ballot("Test Ballot");
 
             lBallot.AddNewChoice("Marc");
             lBallot.AddNewChoice("Nick");
@@ -21,9 +22,11 @@ namespace IRVTest
 
             var lStop = false;
             var lDirectionUp = true;
+            Choice[] lCurrentRanking;
             while (!lStop)
             {
-                ShowVoteMenu(lVote.GetCurrentRanking());
+                lCurrentRanking = lVote.GetCurrentRanking();
+                ShowVoteMenu(lCurrentRanking);
 
                 var s = Console.ReadLine();
 
@@ -38,12 +41,16 @@ namespace IRVTest
                     case "d":
                         lDirectionUp = false;
                         break;
+                    case "s":
+                        lBallot.SubmitVote(lVote);
+                        lVote = lBallot.CreateVote();
+                        break;
                     default:
                         if (int.TryParse(s, out int lInt))
                             if (lDirectionUp)
-                                lVote.IncreaseChoiceRank(lInt);
+                                lVote.IncreaseChoiceRank(lCurrentRanking[lInt].UniqueID);
                             else
-                                lVote.DecreaseChoiceRank(lInt);
+                                lVote.DecreaseChoiceRank(lCurrentRanking[lInt].UniqueID);
                         break;
                 }
             }
@@ -53,9 +60,10 @@ namespace IRVTest
         {
             Console.Clear();
 
-            foreach (var item in pChoices)
+            for (int i = 0; i < pChoices.Length; i++)
             {
-                Console.WriteLine(item.UniqueID + ": " + item.Name);
+                //Console.WriteLine(i + ": " + pChoices[i].Name + "\t\t(" + pChoices[i].UniqueID + ")");
+                Console.WriteLine("{0,2}{1,20}{2,40}", i, pChoices[i].Name, pChoices[i].UniqueID);
             }
 
             Console.WriteLine();
