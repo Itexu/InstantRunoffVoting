@@ -18,7 +18,7 @@ namespace IRVTest
             lBallot.AddNewChoice("Jeroen");
             lBallot.AddNewChoice("Lieke");
 
-            var lVote = lBallot.CreateVote();
+            var lVote = lBallot.GetVoteForVoter("Test");
 
             var lStop = false;
             var lDirectionUp = true;
@@ -43,14 +43,16 @@ namespace IRVTest
                         break;
                     case "s":
                         lBallot.SubmitVote(lVote);
-                        lVote = lBallot.CreateVote();
+                        lVote = lBallot.GetVoteForVoter("Test");
                         break;
                     default:
                         if (int.TryParse(s, out int lInt))
+                        {
                             if (lDirectionUp)
                                 lVote.IncreaseChoiceRank(lCurrentRanking[lInt].UniqueID);
                             else
                                 lVote.DecreaseChoiceRank(lCurrentRanking[lInt].UniqueID);
+                        }
                         break;
                 }
             }

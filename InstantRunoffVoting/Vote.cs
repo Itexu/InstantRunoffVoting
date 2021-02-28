@@ -6,20 +6,23 @@
 
     public class Vote
     {
+        public string Voter { get; }
         public string BallotID { get; }
         public string VoteID { get; }
         private readonly Choice[] Choices;
 
-        public Vote(string pBallotID, List<Choice> pChoices, string pVoteID = null)
+        public Vote(string pVoter, string pBallotID, List<Choice> pChoices, string pVoteID = null)
         {
+            Voter = pVoter;
             VoteID = pVoteID;
             BallotID = pBallotID;
             Choices = pChoices?.ToArray() ?? throw new ArgumentNullException("Can't create empty Vote", nameof(pChoices));
             if (Choices.Length == 0)
                 throw new ArgumentException("Can't create empty Vote", nameof(pChoices));
         }
-        public Vote(string pBallotID, Choice[] pChoices, string pVoteID = null)
+        public Vote(string pVoter, string pBallotID, Choice[] pChoices, string pVoteID = null)
         {
+            Voter = pVoter;
             VoteID = pVoteID ?? Tools.CreateUniqueID();
             BallotID = pBallotID;
             Choices = pChoices ?? throw new ArgumentNullException("Can't create empty Vote", nameof(pChoices));

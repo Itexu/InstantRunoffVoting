@@ -26,22 +26,33 @@
         }
 
         #region Votes
-        public Vote CreateVote()
+        /// <summary>
+        /// Creates a new Vote for Voter.
+        /// Will return old Vote if Found
+        /// </summary>
+        /// <param name="pVoter">Voter/User to get Vote for</param>
+        /// <returns></returns>
+        public Vote GetVoteForVoter(string pVoter)
         {
-
-            return new Vote(UniqueID, Choices);
+            return SubmittedVotes.Find(v => string.Equals(v.Voter, pVoter, StringComparison.OrdinalIgnoreCase)) ?? new Vote(pVoter, UniqueID, Choices);
         }
 
+        /// <summary>
+        /// Submit Vote
+        /// </summary>
+        /// <param name="pVote"></param>
         public void SubmitVote(Vote pVote)
         {
-            /*if (SubmittedVotes.Count == 0) {
-                SubmittedVotes.Add(pVote);
-                return;
-            }*/
+            if (VoteClosed != null)
+                if (DateTime.UtcNow > VoteClosed.ToUniversalTime())
+                    throw new ApplicationException("Vote Already Closed");
 
-            var lOldVOte = SubmittedVotes.Find(v => v.VoteID == pVote.VoteID);
-            if (lOldVOte != null)
-                SubmittedVotes.Remove(lOldVOte);
+            var lOldVote = SubmittedVotes.Find(v => string.Equals(v.VoteID, pVote.VoteID));
+            if (lOldVote != null)
+                SubmittedVotes.Remove(lOldVote);
+            lOldVote = SubmittedVotes.Find(v => string.Equals(v.Voter, pVote.Voter, StringComparison.OrdinalIgnoreCase));
+            if (lOldVote != null)
+                SubmittedVotes.Remove(lOldVote);
 
             SubmittedVotes.Add(pVote);
         }
