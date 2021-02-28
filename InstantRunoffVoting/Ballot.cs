@@ -2,30 +2,41 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class Ballot
     {
         public int UniqueID { get; }
         public string Name { get; set; }
 
-        public DateTime VoteFrom { get; set; }
-        public DateTime VoteTill { get; set; }
+        public DateTime VoteOpen { get; set; }
+        public DateTime VoteClosed { get; set; }
 
-        public List<Choice> Choices { get; }
+        private readonly List<Choice> Choices;
 
-        public Ballot(int pintUniqueID, string ptxtName, DateTime pdatFrom, DateTime pdatTill, List<Choice> pchoices = null)
+        public Ballot(int pUniqueID, string pName, List<Choice> pChoices = null)
         {
-            UniqueID = pintUniqueID;
-            Name = ptxtName;
-            VoteFrom = pdatFrom;
-            VoteTill = pdatTill;
+            UniqueID = pUniqueID;
+            Name = pName;
 
-            Choices = pchoices ?? new List<Choice>();
+            Choices = pChoices ?? new List<Choice>();
         }
 
         public Vote CreateVote()
         {
             return new Vote(UniqueID, Choices);
+        }
+
+        public void AddNewChoice(string pName)
+        {
+            Choices.Add(new Choice(NewID(), pName));
+        }
+
+        private int NewID()
+        {
+            if (Choices.Count == 0)
+                return 1;
+            return Choices.OrderByDescending(c => c.UniqueID).FirstOrDefault().UniqueID + 1;
         }
     }
 }

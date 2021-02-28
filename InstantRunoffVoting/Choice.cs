@@ -9,7 +9,7 @@ namespace InstantRunoffVoting
         public int UniqueID { get; }
         public string Name { get; }
 
-        public Choice (int pintUniqueID, string ptxtName)
+        public Choice(int pintUniqueID, string ptxtName)
         {
             UniqueID = pintUniqueID;
             Name = ptxtName;
