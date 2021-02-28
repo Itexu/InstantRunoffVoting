@@ -10,15 +10,8 @@
         public string VoteID { get; }
         private readonly Choice[] Choices;
 
-        public Vote(string pVoter, string pBallotID, List<Choice> pChoices, string pVoteID = null)
-        {
-            Voter = pVoter;
-            VoteID = pVoteID;
-            BallotID = pBallotID;
-            Choices = pChoices?.ToArray() ?? throw new ArgumentNullException("Can't create empty Vote", nameof(pChoices));
-            if (Choices.Length == 0)
-                throw new ArgumentException("Can't create empty Vote", nameof(pChoices));
-        }
+        public Vote(string pVoter, string pBallotID, List<Choice> pChoices, string pVoteID = null) : this(pVoter, pBallotID, pChoices?.ToArray(), pVoteID) { }
+
         public Vote(string pVoter, string pBallotID, Choice[] pChoices, string pVoteID = null)
         {
             Voter = pVoter;
@@ -59,12 +52,12 @@
                 return;
 
             if (lCurrentRank < pintNewRank)
-                for (int i = lCurrentRank; i <= pintNewRank; i++)
+                for (int i = lCurrentRank; i < pintNewRank; i++)
                 {
                     DecreaseChoiceRank(pChoiceID);
                 }
             else
-                for (int i = lCurrentRank; i <= pintNewRank; i--)
+                for (int i = lCurrentRank; i > pintNewRank; i--)
                 {
                     IncreaseChoiceRank(pChoiceID);
                 }
