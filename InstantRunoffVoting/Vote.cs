@@ -2,22 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO.Pipes;
 
     public class Vote
     {
-        public int BallotID { get; }
+        public string Voter { get; }
+        public string BallotID { get; }
+        public string VoteID { get; }
         private readonly Choice[] Choices;
 
-        public Vote(int pBallotID, List<Choice> pChoices)
+        public Vote(string pVoter, string pBallotID, List<Choice> pChoices, string pVoteID = null) : this(pVoter, pBallotID, pChoices?.ToArray(), pVoteID) { }
+
+        public Vote(string pVoter, string pBallotID, Choice[] pChoices, string pVoteID = null)
         {
-            BallotID = pBallotID;
-            Choices = pChoices?.ToArray() ?? throw new ArgumentNullException("Can't create empty Vote", nameof(pChoices));
-            if (Choices.Length == 0)
-                throw new ArgumentException("Can't create empty Vote", nameof(pChoices));
-        }
-        public Vote(int pBallotID, Choice[] pChoices)
-        {
+            Voter = pVoter;
+            VoteID = pVoteID ?? Tools.CreateUniqueID();
             BallotID = pBallotID;
             Choices = pChoices ?? throw new ArgumentNullException("Can't create empty Vote", nameof(pChoices));
             if (Choices.Length == 0)
@@ -25,7 +23,7 @@
         }
 
         #region Ranking
-        public void IncreaseChoiceRank(int pChoiceID)
+        public void IncreaseChoiceRank(string pChoiceID)
         {
             var lChoiceRank = GetChoiceCurrentRank(pChoiceID);
             if (lChoiceRank <= 0) // Not first
@@ -34,7 +32,7 @@
             SwitchPositions(lChoiceRank, lChoiceRank - 1);
         }
 
-        public void DecreaseChoiceRank(int pChoiceID)
+        public void DecreaseChoiceRank(string pChoiceID)
         {
             var lChoiceRank = GetChoiceCurrentRank(pChoiceID);
             if (lChoiceRank >= Choices.Length - 1) // not last
@@ -43,7 +41,7 @@
             SwitchPositions(lChoiceRank, lChoiceRank + 1);
         }
 
-        public void SetRank(int pChoiceID, int pintNewRank)
+        public void SetRank(string pChoiceID, int pintNewRank)
         {
             int lCurrentRank = GetChoiceCurrentRank(pChoiceID);
 
@@ -54,23 +52,23 @@
                 return;
 
             if (lCurrentRank < pintNewRank)
-                for (int i = lCurrentRank; i <= pintNewRank; i++)
+                for (int i = lCurrentRank; i < pintNewRank; i++)
                 {
                     DecreaseChoiceRank(pChoiceID);
                 }
             else
-                for (int i = lCurrentRank; i <= pintNewRank; i--)
+                for (int i = lCurrentRank; i > pintNewRank; i--)
                 {
                     IncreaseChoiceRank(pChoiceID);
                 }
 
         }
 
-        private int GetChoiceCurrentRank(int pChoiceID)
+        private int GetChoiceCurrentRank(string pChoiceID)
         {
             for (int i = 0; i < Choices.Length; i++)
             {
-                if (Choices[i].UniqueID == pChoiceID)
+                if (string.Equals(Choices[i].UniqueID , pChoiceID,StringComparison.OrdinalIgnoreCase))
                     return i;
             }
 
